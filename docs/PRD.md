@@ -296,17 +296,36 @@ non-goals).
 
 For traceability against this PRD:
 
-- **Frontend (`frontend/`)** — built. React + TypeScript, Vite. Implements
-  a slice of FR-3 (plate search only, no color/type/date/location filters
-  yet) against **mock data** — no backend exists yet. This satisfies none
-  of FR-3.6 (search logging) yet since there's nothing to log against.
+- **Frontend (`frontend/`)** — built as a full SaaS shell, all against
+  **mock/session data** — no backend exists yet:
+  - Sidebar + top bar shell (React Router) covering all 11 IA modules from
+    Section 6. `[VISION]`-only items (Live Map, Video, Cameras & Health)
+    render as disabled nav entries; Sharing renders its illustrative mock
+    page (7.8).
+  - **Overview** — stat tiles (records, searches, active alerts, hotlist
+    entries) with a records-per-day sparkline; recent records.
+  - **Vehicle Search** — FR-3.1–3.6 implemented: plate/color/type/date
+    filters, optional reason field, and every search is logged to the
+    audit trail (session-only, resets on reload).
+  - **Alerts** — FR-5.1–5.4: hotlist list + create form, alert review/
+    dismiss actions, all logged.
+  - **Investigations** — FR-6.1–6.2: create, attach records, detail view.
+    FR-6.3 (export) not built.
+  - **Insights & Audit** — FR-9.1–9.4: read-only chronological log fed by
+    search and alert actions, plus per-user search counts.
+  - **Users & Roles** — FR-10.1–10.3: fixed Admin/Investigator/Viewer
+    roles, activate/deactivate, gated to the Admin role.
+  - **Organization Settings** — FR-11.1–11.2: org name, retention days,
+    mock API key rotation, gated to Admin.
+  - A top-bar "Acting as" switcher previews role-gating (Section 5,
+    Principle 4) without real auth — see Section 13, open question 1.
+  - All of the above resets on page reload; there is no persistence layer
+    yet, by design, until Phase 1 lands.
 - **Backend (`backend/`)** — not built. Skill doc defines the intended
   `POST /uploads` / `GET /records` contract.
 - **Infra (`infra/`)** — not built. Skill doc defines the intended
   Terraform resources.
 - **Android app (`android/`)** — not built.
-- **Alerts, Investigations, Audit, Users & Roles, Org Settings** — not
-  built; this PRD is what defines them for the first time.
 
 ---
 
@@ -407,14 +426,20 @@ job:
 |---|---|---|
 | **0** | Architecture defined (skill doc), frontend scaffold with mock data | ✅ Done |
 | **1** | Real backend: `infra/` (Terraform) + `backend/` (ingest + records Lambdas) per skill doc contract; frontend switched from mock data to real API calls | Not started |
-| **2** | Vehicle Search filters beyond plate (color/type/date/location — FR-3.2–3.5); Alerts + custom hotlists (FR-5.x) | Not started |
-| **3** | Investigations (FR-6.x); Insights & Audit log (FR-9.x); basic Users & Roles (FR-10.x) | Not started |
+| **2** | Vehicle Search filters beyond plate (color/type/date/location — FR-3.2–3.5); Alerts + custom hotlists (FR-5.x) | ✅ Frontend done (mock/session data); needs Phase 1 to be real |
+| **3** | Investigations (FR-6.x); Insights & Audit log (FR-9.x); basic Users & Roles (FR-10.x) | ✅ Frontend done (mock/session data); needs Phase 1 to be real |
 | **4** | Android app (`android/`), wired to the real upload endpoint | Not started |
-| **5 (stretch)** | Org Settings retention enforcement; mock Sharing screen (Section 7.8); map view on Overview/Vehicle Search using existing lat/lon data | Not started |
+| **5 (stretch)** | Org Settings retention enforcement; mock Sharing screen (Section 7.8); map view on Overview/Vehicle Search using existing lat/lon data | Org Settings UI + Sharing mock done; retention enforcement and map view not started |
 
 Phase order is a recommendation, not a constraint — Phase 4 (Android) could
 reasonably move earlier if a real device demo is wanted sooner, since it
 only depends on Phase 1's upload endpoint existing.
+
+**Note on sequencing:** Phases 2, 3, and part of 5 got built at the UI layer
+ahead of Phase 1 (frontend-first, on mock/session data) rather than in the
+original order — reasonable for shaping the full IA quickly, but it means
+Phase 1 now needs to backfill real persistence and auth (Section 13, open
+question 1) behind an already-built UI, not the other way around.
 
 ---
 

@@ -13,8 +13,11 @@ for the concrete architecture, API contract, and deploy steps.
 
 ## Current status
 
-Only the frontend exists so far, running against mock data (no backend
-deployed yet):
+Only the frontend exists so far — a full SaaS shell (Overview, Vehicle
+Search, Alerts, Investigations, Insights & Audit, Users & Roles, Org
+Settings, plus an illustrative Sharing mock) running entirely on mock/
+session data. No backend is deployed yet; see `docs/PRD.md` §8 for exactly
+what's implemented vs. still just spec.
 
 ```
 cd frontend
