@@ -7,8 +7,9 @@ uploading vehicle photos.
 Deploys entirely into your own AWS account using your own local AWS
 credentials and API keys — nothing here is shared or pre-provisioned.
 
-See [`.claude/skills/alpr-demo-infra/SKILL.md`](.claude/skills/alpr-demo-infra/SKILL.md)
-for the full architecture, API contract, and deploy steps.
+See [`docs/PRD.md`](docs/PRD.md) for what this product does and doesn't do
+(and why), and [`.claude/skills/alpr-demo-infra/SKILL.md`](.claude/skills/alpr-demo-infra/SKILL.md)
+for the concrete architecture, API contract, and deploy steps.
 
 ## Current status
 
