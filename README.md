@@ -9,3 +9,14 @@ credentials and API keys — nothing here is shared or pre-provisioned.
 
 See [`.claude/skills/alpr-demo-infra/SKILL.md`](.claude/skills/alpr-demo-infra/SKILL.md)
 for the full architecture, API contract, and deploy steps.
+
+## Current status
+
+Only the frontend exists so far, running against mock data (no backend
+deployed yet):
+
+```
+cd frontend
+npm install
+npm run dev
+```

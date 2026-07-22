@@ -1,0 +1,101 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  text-align: left;
+}
+
+.page-header h1 {
+  margin-bottom: 0.1rem;
+}
+
+.subtitle {
+  margin-top: 0;
+  color: #888;
+}
+
+.mock-banner {
+  background: #fff3bf;
+  color: #4a3b00;
+  border: 1px solid #ffe066;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mock-banner {
+    background: #4a3b00;
+    color: #ffe066;
+    border-color: #7a6300;
+  }
+}
+
+.plate-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.record-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-bg, transparent);
+}
+
+.record-card img {
+  width: 100%;
+  display: block;
+}
+
+.record-body {
+  padding: 0.8rem 1rem 1rem;
+}
+
+.plate-text {
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.confidence {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #888;
+}
+
+.record-body dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.6rem;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.record-body dt {
+  color: #888;
+}
+
+.record-body dd {
+  margin: 0;
+}
+
+.empty-state {
+  color: #888;
+}
