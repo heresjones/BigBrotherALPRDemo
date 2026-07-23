@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 interface NavItem {
   label: string;
   path: string;
+  icon: string;
   tier: "demo" | "vision" | "vision-mock";
 }
 
@@ -10,62 +11,66 @@ interface NavItem {
 // at all (no camera hardware, no live video in this demo); "vision-mock" is
 // Sharing, which PRD §7.8 calls for as an illustrative-only mock.
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Overview", path: "/", tier: "demo" },
-  { label: "Live Map", path: "/live-map", tier: "vision" },
-  { label: "Vehicle Search", path: "/search", tier: "demo" },
-  { label: "Video", path: "/video", tier: "vision" },
-  { label: "Alerts", path: "/alerts", tier: "demo" },
-  { label: "Investigations", path: "/investigations", tier: "demo" },
-  { label: "Cameras & Health", path: "/cameras", tier: "vision" },
-  { label: "Sharing", path: "/sharing", tier: "vision-mock" },
-  { label: "Insights & Audit", path: "/audit", tier: "demo" },
-  { label: "Users & Roles", path: "/users", tier: "demo" },
-  { label: "Organization Settings", path: "/settings", tier: "demo" },
+  { label: "Overview", path: "/", icon: "speedometer", tier: "demo" },
+  { label: "Live Map", path: "/live-map", icon: "geo-alt", tier: "vision" },
+  { label: "Vehicle Search", path: "/search", icon: "search", tier: "demo" },
+  { label: "Video", path: "/video", icon: "camera-video", tier: "vision" },
+  { label: "Alerts", path: "/alerts", icon: "bell-fill", tier: "demo" },
+  { label: "Investigations", path: "/investigations", icon: "folder2-open", tier: "demo" },
+  { label: "Cameras & Health", path: "/cameras", icon: "cpu-fill", tier: "vision" },
+  { label: "Sharing", path: "/sharing", icon: "share-fill", tier: "vision-mock" },
+  { label: "Insights & Audit", path: "/audit", icon: "clipboard-data-fill", tier: "demo" },
+  { label: "Users & Roles", path: "/users", icon: "people-fill", tier: "demo" },
+  { label: "Organization Settings", path: "/settings", icon: "gear-fill", tier: "demo" },
 ];
 
 export function Sidebar() {
   return (
-    <nav className="flex h-full w-64 shrink-0 flex-col border-r border-[var(--border-hairline)] bg-[var(--surface-1)] p-3">
-      <div className="mb-4 px-2 pt-1">
-        <div className="text-sm font-semibold text-[var(--text-primary)]">BigBrotherALPRDemo</div>
-        <div className="text-xs text-[var(--text-muted)]">ALPR investigations platform</div>
+    <aside className="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div className="sidebar-brand">
+        <a href="/" className="brand-link">
+          <i className="bi bi-shield-lock-fill text-primary" style={{ fontSize: "1.7rem", marginLeft: "0.7rem" }} />
+          <span className="brand-text fw-light">BigBrotherALPRDemo</span>
+        </a>
       </div>
-      <ul className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
-        {NAV_ITEMS.map((item) => (
-          <li key={item.path}>
-            {item.tier === "vision" ? (
-              <span
-                className="flex cursor-not-allowed items-center justify-between rounded-md px-2.5 py-1.5 text-sm text-[var(--text-muted)]"
-                title="Modeled in the PRD as a vision-tier capability; not built in this demo"
-              >
-                {item.label}
-                <span className="rounded-full border border-[var(--border-hairline)] px-1.5 py-0.5 text-[10px] tracking-wide uppercase">
-                  Vision
-                </span>
-              </span>
-            ) : (
-              <NavLink
-                to={item.path}
-                end={item.path === "/"}
-                className={({ isActive }) =>
-                  `flex items-center justify-between rounded-md px-2.5 py-1.5 text-sm ${
-                    isActive
-                      ? "bg-[var(--accent-wash)] font-medium text-[var(--series-1)]"
-                      : "text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5"
-                  }`
-                }
-              >
-                {item.label}
-                {item.tier === "vision-mock" && (
-                  <span className="rounded-full border border-[var(--border-hairline)] px-1.5 py-0.5 text-[10px] tracking-wide text-[var(--text-muted)] uppercase">
-                    Mock
+
+      <div className="sidebar-wrapper">
+        <nav className="mt-2" aria-label="Main navigation">
+          <ul className="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false">
+            {NAV_ITEMS.map((item) =>
+              item.tier === "vision" ? (
+                <li className="nav-item" key={item.path}>
+                  <span
+                    className="nav-link disabled"
+                    style={{ cursor: "not-allowed" }}
+                    title="Modeled in the PRD as a vision-tier capability — not built in this demo"
+                  >
+                    <i className={`nav-icon bi bi-${item.icon}`}></i>
+                    <p>
+                      {item.label}
+                      <span className="nav-badge badge text-bg-secondary me-3">Vision</span>
+                    </p>
                   </span>
-                )}
-              </NavLink>
+                </li>
+              ) : (
+                <li className="nav-item" key={item.path}>
+                  <NavLink
+                    to={item.path}
+                    end={item.path === "/"}
+                    className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                  >
+                    <i className={`nav-icon bi bi-${item.icon}`}></i>
+                    <p>
+                      {item.label}
+                      {item.tier === "vision-mock" && <span className="nav-badge badge text-bg-warning me-3">Mock</span>}
+                    </p>
+                  </NavLink>
+                </li>
+              ),
             )}
-          </li>
-        ))}
-      </ul>
-    </nav>
+          </ul>
+        </nav>
+      </div>
+    </aside>
   );
 }

@@ -1,19 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { useAppData } from "../context/AppDataContext";
 import { RoleGate } from "../components/RoleGate";
+import { PageHeader, PageContent } from "../components/Page";
 import { formatTimestamp } from "../utils/format";
 
 export default function OrgSettingsPage() {
   return (
-    <div>
-      <h1 className="text-xl font-semibold text-[var(--text-primary)]">Organization Settings</h1>
-      <p className="mt-1 text-sm text-[var(--text-secondary)]">
-        Org identity, retention policy, and the shared demo API key.
-      </p>
-      <RoleGate allow={["Admin"]}>
-        <SettingsForm />
-      </RoleGate>
-    </div>
+    <>
+      <PageHeader title="Organization Settings" lead="Org identity, retention policy, and the shared demo API key." />
+      <PageContent>
+        <RoleGate allow={["Admin"]}>
+          <SettingsForm />
+        </RoleGate>
+      </PageContent>
+    </>
   );
 }
 
@@ -28,54 +28,59 @@ function SettingsForm() {
   }
 
   return (
-    <div className="mt-4 grid gap-6 sm:grid-cols-2">
-      <form
-        onSubmit={handleSubmit}
-        className="grid gap-3 rounded-lg border border-[var(--border-hairline)] bg-[var(--surface-1)] p-4"
-      >
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-[var(--text-secondary)]">Organization name</span>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="rounded-md border border-[var(--border-hairline)] bg-transparent px-2 py-1.5"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-[var(--text-secondary)]">Retention period (days)</span>
-          <input
-            type="number"
-            min={1}
-            value={retentionDays}
-            onChange={(e) => setRetentionDays(Number(e.target.value))}
-            className="rounded-md border border-[var(--border-hairline)] bg-transparent px-2 py-1.5"
-          />
-        </label>
-        <p className="text-xs text-[var(--text-muted)]">
-          Records older than this are eligible for deletion. Enforcement is a documented manual step in this demo —
-          see docs/PRD.md §13.
-        </p>
-        <div>
-          <button type="submit" className="rounded-md bg-[var(--series-1)] px-3 py-1.5 text-sm font-medium text-white">
-            Save
-          </button>
+    <div className="row">
+      <div className="col-md-6">
+        <div className="card mb-4">
+          <div className="card-header">
+            <h3 className="card-title">Organization</h3>
+          </div>
+          <div className="card-body">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Organization name</label>
+                <input value={name} onChange={(e) => setName(e.target.value)} className="form-control" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Retention period (days)</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={retentionDays}
+                  onChange={(e) => setRetentionDays(Number(e.target.value))}
+                  className="form-control"
+                  style={{ maxWidth: 160 }}
+                />
+                <div className="form-text">
+                  Records older than this are eligible for deletion. Enforcement is a documented manual step in this
+                  demo — see docs/PRD.md §13.
+                </div>
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Save
+              </button>
+            </form>
+          </div>
         </div>
-      </form>
+      </div>
 
-      <div className="rounded-lg border border-[var(--border-hairline)] bg-[var(--surface-1)] p-4">
-        <div className="text-sm font-medium text-[var(--text-primary)]">Shared API key</div>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">
-          Demo-grade auth per the skill doc: a single shared key checked by each Lambda. Not a real per-user
-          credential.
-        </p>
-        <div className="mt-3 font-mono text-sm text-[var(--text-secondary)]">••••••••{orgSettings.apiKeyLast4}</div>
-        <div className="mt-1 text-xs text-[var(--text-muted)]">Rotated {formatTimestamp(orgSettings.apiKeyRotatedAt)}</div>
-        <button
-          onClick={rotateApiKey}
-          className="mt-3 rounded-md border border-[var(--border-hairline)] px-3 py-1.5 text-sm text-[var(--text-secondary)]"
-        >
-          Rotate key
-        </button>
+      <div className="col-md-6">
+        <div className="card mb-4">
+          <div className="card-header">
+            <h3 className="card-title">Shared API key</h3>
+          </div>
+          <div className="card-body">
+            <p className="text-body-secondary">
+              Demo-grade auth per the skill doc: a single shared key checked by each Lambda. Not a real per-user
+              credential.
+            </p>
+            <div className="font-monospace-lg mb-1">••••••••{orgSettings.apiKeyLast4}</div>
+            <div className="text-body-secondary small mb-3">Rotated {formatTimestamp(orgSettings.apiKeyRotatedAt)}</div>
+            <button onClick={rotateApiKey} className="btn btn-outline-secondary">
+              <i className="bi bi-arrow-repeat me-1"></i>
+              Rotate key
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

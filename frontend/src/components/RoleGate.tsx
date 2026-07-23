@@ -6,12 +6,13 @@ export function RoleGate({ allow, children }: { allow: UserRole[]; children: Rea
   const { currentUser } = useAppData();
   if (!allow.includes(currentUser.role)) {
     return (
-      <div className="rounded-lg border border-[var(--border-hairline)] bg-[var(--surface-1)] p-6 text-sm text-[var(--text-secondary)]">
-        <div className="font-medium text-[var(--text-primary)]">Restricted</div>
-        <p className="mt-1">
-          This section requires the {allow.join(" or ")} role. You're acting as <strong>{currentUser.name}</strong> ({currentUser.role}).
-          Switch roles from "Acting as" in the top bar to preview it.
-        </p>
+      <div className="alert alert-secondary d-flex align-items-start" role="alert">
+        <i className="bi bi-lock-fill me-2 mt-1"></i>
+        <div>
+          <strong>Restricted.</strong> This section requires the {allow.join(" or ")} role. You're acting as{" "}
+          <strong>{currentUser.name}</strong> ({currentUser.role}). Switch roles from the user menu in the top bar to
+          preview it.
+        </div>
       </div>
     );
   }

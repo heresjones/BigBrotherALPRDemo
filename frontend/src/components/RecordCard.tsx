@@ -4,28 +4,37 @@ import { formatLocation, formatTimestamp } from "../utils/format";
 
 export function RecordCard({ record, footer }: { record: AlprRecord; footer?: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-[var(--border-hairline)] bg-[var(--surface-1)]">
-      <img src={record.imageUrl} alt={record.plateText ?? "Unreadable plate"} className="block w-full" />
-      <div className="p-3">
-        <div className="flex items-center gap-2 font-mono text-lg font-bold text-[var(--text-primary)]">
-          {record.plateText ?? "Unreadable"}
-          {record.plateConfidence !== null && (
-            <span className="text-xs font-normal text-[var(--text-muted)]">{Math.round(record.plateConfidence * 100)}%</span>
-          )}
+    <div className="col-lg-3 col-md-4 col-6">
+      <div className="card mb-4">
+        <img
+          src={record.imageUrl}
+          alt={record.plateText ?? "Unreadable plate"}
+          className="card-img-top record-card-img"
+        />
+        <div className="card-body">
+          <h5 className="font-monospace-lg d-flex align-items-center gap-2 mb-2">
+            {record.plateText ?? "Unreadable"}
+            {record.plateConfidence !== null && (
+              <small className="text-body-secondary fw-normal fs-6">{Math.round(record.plateConfidence * 100)}%</small>
+            )}
+          </h5>
+          <div className="small">
+            {(
+              [
+                ["Vehicle", `${record.vehicleColor ?? "Unknown"} ${record.vehicleType ?? "vehicle"}`],
+                ["Make/model", "Unknown"],
+                ["Captured", formatTimestamp(record.capturedAt)],
+                ["Location", formatLocation(record.latitude, record.longitude)],
+              ] as const
+            ).map(([label, value]) => (
+              <div className="d-flex justify-content-between gap-2 py-1 border-bottom" key={label}>
+                <span className="text-body-secondary text-nowrap">{label}</span>
+                <span className="text-end">{value}</span>
+              </div>
+            ))}
+          </div>
+          {footer && <div className="mt-2 pt-2 border-top">{footer}</div>}
         </div>
-        <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-sm">
-          <dt className="text-[var(--text-muted)]">Vehicle</dt>
-          <dd className="text-[var(--text-secondary)]">
-            {record.vehicleColor ?? "Unknown"} {record.vehicleType ?? "vehicle"}
-          </dd>
-          <dt className="text-[var(--text-muted)]">Make/model</dt>
-          <dd className="text-[var(--text-secondary)]">Unknown</dd>
-          <dt className="text-[var(--text-muted)]">Captured</dt>
-          <dd className="text-[var(--text-secondary)]">{formatTimestamp(record.capturedAt)}</dd>
-          <dt className="text-[var(--text-muted)]">Location</dt>
-          <dd className="text-[var(--text-secondary)]">{formatLocation(record.latitude, record.longitude)}</dd>
-        </dl>
-        {footer && <div className="mt-3 border-t border-[var(--border-hairline)] pt-2">{footer}</div>}
       </div>
     </div>
   );

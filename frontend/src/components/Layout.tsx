@@ -4,16 +4,16 @@ import { Topbar } from "./Topbar";
 
 export function Layout() {
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="app-wrapper">
+      <Topbar />
       <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Topbar />
-        <main className="flex-1 overflow-y-auto bg-[var(--surface-page)] p-6">
-          <div className="mx-auto max-w-5xl">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+      <main className="app-main">
+        <Outlet />
+      </main>
+      <footer className="app-footer">
+        <strong>BigBrotherALPRDemo</strong> — a demo ALPR investigations platform. No real surveillance data anywhere
+        in this app; see <code>docs/PRD.md</code>.
+      </footer>
     </div>
   );
 }
