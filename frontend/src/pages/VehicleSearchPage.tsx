@@ -122,7 +122,7 @@ export default function VehicleSearchPage() {
                 />
               </div>
               <div className="col-md-6">
-                <label className="form-label">Reason for search (optional in demo)</label>
+                <label className="form-label">Reason for search (optional)</label>
                 <input
                   type="text"
                   value={reason}

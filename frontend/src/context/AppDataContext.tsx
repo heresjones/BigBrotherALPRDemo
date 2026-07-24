@@ -1,17 +1,21 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { mockRecords } from "../data/records";
+import { cameras } from "../data/cameras";
 import { initialUsers } from "../data/users";
 import { initialHotlists } from "../data/hotlists";
 import { initialAlerts } from "../data/alerts";
 import { initialInvestigations } from "../data/investigations";
 import { initialAuditLog } from "../data/auditLog";
+import { initialSearchLog } from "../data/searchLog";
 import { initialOrgSettings } from "../data/org";
+import { detectDeviations, scoreThreshold, type DeviationCandidate } from "../utils/deviations";
 import type {
   AlertItem,
   AlertStatus,
   AlprRecord,
   AppUser,
   AuditActionType,
+  Camera,
   Hotlist,
   Investigation,
   OrgSettings,
@@ -25,6 +29,7 @@ function nextId(prefix: string): string {
 
 interface AppDataValue {
   records: AlprRecord[];
+  cameras: Camera[];
   users: AppUser[];
   hotlists: Hotlist[];
   alerts: AlertItem[];
@@ -34,6 +39,13 @@ interface AppDataValue {
   searchLog: SearchLogEntry[];
   currentUser: AppUser;
   setCurrentUserId: (id: string) => void;
+
+  deviationSensitivity: number;
+  setDeviationSensitivity: (value: number) => void;
+  deviationWatchlist: Record<string, boolean>;
+  toggleDeviationWatch: (plateText: string) => void;
+  deviationsByPlate: Record<string, DeviationCandidate[]>;
+  activeDeviationPlates: Set<string>;
 
   logSearch: (filters: SearchFilters, reason: string | undefined, resultCount: number) => void;
   reviewAlert: (alertId: string, status: AlertStatus, note?: string) => void;
@@ -67,16 +79,46 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [investigations, setInvestigations] = useState<Investigation[]>(initialInvestigations);
   const [auditLog, setAuditLog] = useState(initialAuditLog);
   const [orgSettings, setOrgSettings] = useState<OrgSettings>(initialOrgSettings);
-  const [searchLog, setSearchLog] = useState<SearchLogEntry[]>([]);
+  const [searchLog, setSearchLog] = useState<SearchLogEntry[]>(initialSearchLog);
   const [currentUserId, setCurrentUserId] = useState<string>(initialUsers[1].id);
+  const [deviationSensitivity, setDeviationSensitivityState] = useState(55);
+  const [deviationWatchlist, setDeviationWatchlist] = useState<Record<string, boolean>>(() => {
+    const plates = new Set(records.map((r) => r.plateText).filter((p): p is string => p !== null));
+    return Object.fromEntries([...plates].map((p) => [p, true]));
+  });
 
   const currentUser = useMemo(
     () => users.find((u) => u.id === currentUserId) ?? users[0],
     [users, currentUserId],
   );
 
+  const deviationsByPlate = useMemo(() => {
+    const byPlate: Record<string, AlprRecord[]> = {};
+    for (const r of records) {
+      if (!r.plateText) continue;
+      (byPlate[r.plateText] ??= []).push(r);
+    }
+    const result: Record<string, DeviationCandidate[]> = {};
+    for (const [plate, plateRecords] of Object.entries(byPlate)) {
+      const candidates = detectDeviations(plateRecords, cameras);
+      if (candidates.length > 0) result[plate] = candidates;
+    }
+    return result;
+  }, [records]);
+
+  const activeDeviationPlates = useMemo(() => {
+    const threshold = scoreThreshold(deviationSensitivity);
+    const plates = new Set<string>();
+    for (const [plate, candidates] of Object.entries(deviationsByPlate)) {
+      if (deviationWatchlist[plate] === false) continue;
+      if (candidates.some((c) => c.score >= threshold)) plates.add(plate);
+    }
+    return plates;
+  }, [deviationsByPlate, deviationWatchlist, deviationSensitivity]);
+
   const value: AppDataValue = {
     records,
+    cameras,
     users,
     hotlists,
     alerts,
@@ -86,6 +128,31 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     searchLog,
     currentUser,
     setCurrentUserId,
+
+    deviationSensitivity,
+    deviationWatchlist,
+    deviationsByPlate,
+    activeDeviationPlates,
+
+    setDeviationSensitivity(nextValue) {
+      setDeviationSensitivityState(nextValue);
+      setAuditLog((prev) =>
+        addAuditEntryTo(prev, currentUser.name, "settings_change", `Set deviation alert sensitivity to ${nextValue}`),
+      );
+    },
+
+    toggleDeviationWatch(plateText) {
+      const nextEnabled = deviationWatchlist[plateText] === false;
+      setDeviationWatchlist((prev) => ({ ...prev, [plateText]: nextEnabled }));
+      setAuditLog((prev) =>
+        addAuditEntryTo(
+          prev,
+          currentUser.name,
+          "settings_change",
+          `${nextEnabled ? "Enabled" : "Disabled"} deviation alerts for plate ${plateText}`,
+        ),
+      );
+    },
 
     logSearch(filters, reason, resultCount) {
       const entry: SearchLogEntry = {

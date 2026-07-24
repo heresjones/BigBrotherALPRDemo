@@ -1,4 +1,3 @@
-import { MockBanner } from "../components/MockBanner";
 import { PageHeader, PageContent } from "../components/Page";
 
 // Static illustrative data per docs/PRD.md §7.8 — Sharing is explicitly
@@ -7,7 +6,7 @@ import { PageHeader, PageContent } from "../components/Page";
 const MOCK_SHARING_RELATIONSHIPS = [
   { org: "Lakeview County Sheriff", scope: "Search detections, receive hotlist alerts", since: "2026-03-01" },
   { org: "Midtown Regional Task Force", scope: "Search detections only", since: "2026-05-14" },
-  { org: "Riverbend PD (this org)", scope: "Owns all cameras and records shown elsewhere in this demo", since: "—" },
+  { org: "Riverbend PD (this org)", scope: "Owns all cameras and records", since: "—" },
 ];
 
 export default function SharingPage() {
@@ -15,12 +14,6 @@ export default function SharingPage() {
     <>
       <PageHeader title="Sharing" lead="Cross-organization camera and data sharing relationships." />
       <PageContent>
-        <MockBanner>
-          Illustrative only — this page shows static example data to model what a sharing-relationships screen looks
-          like. No real cross-account or cross-organization data movement happens anywhere in this demo. See{" "}
-          <code>docs/PRD.md §7.8</code>.
-        </MockBanner>
-
         <div className="card">
           <div className="card-body p-0">
             <div className="table-responsive">

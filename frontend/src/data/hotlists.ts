@@ -6,7 +6,7 @@ export const initialHotlists: Hotlist[] = [
   {
     id: "hotlist-1",
     name: "Stolen Vehicle Reports",
-    description: "Plates reported stolen within the organization's demo dataset.",
+    description: "Plates reported stolen within the organization's jurisdiction.",
     createdBy: "Alex Admin",
     active: true,
     entries: [

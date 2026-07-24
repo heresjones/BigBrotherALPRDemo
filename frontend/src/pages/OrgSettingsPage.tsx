@@ -7,7 +7,7 @@ import { formatTimestamp } from "../utils/format";
 export default function OrgSettingsPage() {
   return (
     <>
-      <PageHeader title="Organization Settings" lead="Org identity, retention policy, and the shared demo API key." />
+      <PageHeader title="Organization Settings" lead="Org identity, retention policy, and API access." />
       <PageContent>
         <RoleGate allow={["Admin"]}>
           <SettingsForm />
@@ -18,7 +18,7 @@ export default function OrgSettingsPage() {
 }
 
 function SettingsForm() {
-  const { orgSettings, updateOrgSettings, rotateApiKey } = useAppData();
+  const { orgSettings, updateOrgSettings, rotateApiKey, deviationSensitivity, setDeviationSensitivity } = useAppData();
   const [name, setName] = useState(orgSettings.name);
   const [retentionDays, setRetentionDays] = useState(orgSettings.retentionDays);
 
@@ -50,10 +50,7 @@ function SettingsForm() {
                   className="form-control"
                   style={{ maxWidth: 160 }}
                 />
-                <div className="form-text">
-                  Records older than this are eligible for deletion. Enforcement is a documented manual step in this
-                  demo — see docs/PRD.md §13.
-                </div>
+                <div className="form-text">Records older than this are eligible for deletion.</div>
               </div>
               <button type="submit" className="btn btn-primary">
                 Save
@@ -70,8 +67,7 @@ function SettingsForm() {
           </div>
           <div className="card-body">
             <p className="text-body-secondary">
-              Demo-grade auth per the skill doc: a single shared key checked by each Lambda. Not a real per-user
-              credential.
+              A single shared key used to authenticate API requests for this organization.
             </p>
             <div className="font-monospace-lg mb-1">••••••••{orgSettings.apiKeyLast4}</div>
             <div className="text-body-secondary small mb-3">Rotated {formatTimestamp(orgSettings.apiKeyRotatedAt)}</div>
@@ -79,6 +75,35 @@ function SettingsForm() {
               <i className="bi bi-arrow-repeat me-1"></i>
               Rotate key
             </button>
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">
+            <h3 className="card-title">Deviation alerting</h3>
+          </div>
+          <div className="card-body">
+            <p className="text-body-secondary">
+              Controls how easily a vehicle's own recent history has to break its pattern before it's flagged, for
+              every vehicle in the org. Per-vehicle alerting can still be turned off from that vehicle's profile.
+            </p>
+            <label htmlFor="org-deviation-sensitivity" className="form-label mb-1">
+              Sensitivity: {deviationSensitivity}
+            </label>
+            <input
+              id="org-deviation-sensitivity"
+              type="range"
+              className="form-range"
+              min={0}
+              max={100}
+              step={5}
+              value={deviationSensitivity}
+              onChange={(e) => setDeviationSensitivity(Number(e.target.value))}
+            />
+            <div className="d-flex justify-content-between small text-body-secondary">
+              <span>Low</span>
+              <span>High</span>
+            </div>
           </div>
         </div>
       </div>

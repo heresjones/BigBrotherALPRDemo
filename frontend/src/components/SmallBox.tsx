@@ -1,23 +1,32 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 interface SmallBoxProps {
   value: string;
   label: string;
   icon: string;
-  variant: "primary" | "success" | "warning" | "danger" | "secondary";
+  variant: "primary" | "success" | "warning" | "danger" | "secondary" | "info";
   to?: string;
   linkText?: string;
+  chart?: ReactNode;
 }
 
-export function SmallBox({ value, label, icon, variant, to, linkText = "More info" }: SmallBoxProps) {
+export function SmallBox({ value, label, icon, variant, to, linkText = "More info", chart }: SmallBoxProps) {
   return (
     <div className="col-lg-3 col-6">
       <div className={`small-box text-bg-${variant}`}>
         <div className="inner">
           <h3>{value}</h3>
-          <p>{label}</p>
+          <p>
+            <i className={`bi bi-${icon} me-1`} aria-hidden="true"></i>
+            {label}
+          </p>
         </div>
-        <i className={`small-box-icon bi bi-${icon}`} aria-hidden="true"></i>
+        {chart ? (
+          <div className="small-box-chart">{chart}</div>
+        ) : (
+          <i className={`small-box-icon bi bi-${icon}`} aria-hidden="true"></i>
+        )}
         {to && (
           <Link
             to={to}

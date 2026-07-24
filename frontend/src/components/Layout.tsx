@@ -11,8 +11,7 @@ export function Layout() {
         <Outlet />
       </main>
       <footer className="app-footer">
-        <strong>BigBrotherALPRDemo</strong> — a demo ALPR investigations platform. No real surveillance data anywhere
-        in this app; see <code>docs/PRD.md</code>.
+        <strong>BigBrotherALPRDemo</strong> — ALPR investigations platform.
       </footer>
     </div>
   );

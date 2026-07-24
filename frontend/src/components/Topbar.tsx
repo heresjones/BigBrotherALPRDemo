@@ -114,7 +114,7 @@ export function Topbar() {
                   <small>Acting as {currentUser.role}</small>
                 </p>
               </li>
-              <li className="dropdown-header">Switch acting user (demo only)</li>
+              <li className="dropdown-header">Switch user</li>
               {users
                 .filter((u) => u.active)
                 .map((u) => (

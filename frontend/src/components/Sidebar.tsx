@@ -43,13 +43,10 @@ export function Sidebar() {
                   <span
                     className="nav-link disabled"
                     style={{ cursor: "not-allowed" }}
-                    title="Modeled in the PRD as a vision-tier capability — not built in this demo"
+                    title="Coming soon"
                   >
                     <i className={`nav-icon bi bi-${item.icon}`}></i>
-                    <p>
-                      {item.label}
-                      <span className="nav-badge badge text-bg-secondary me-3">Vision</span>
-                    </p>
+                    <p>{item.label}</p>
                   </span>
                 </li>
               ) : (
@@ -60,14 +57,19 @@ export function Sidebar() {
                     className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
                   >
                     <i className={`nav-icon bi bi-${item.icon}`}></i>
-                    <p>
-                      {item.label}
-                      {item.tier === "vision-mock" && <span className="nav-badge badge text-bg-warning me-3">Mock</span>}
-                    </p>
+                    <p>{item.label}</p>
                   </NavLink>
                 </li>
               ),
             )}
+
+            <li className="nav-header">SCENARIO LIBRARY</li>
+            <li className="nav-item">
+              <NavLink to="/demos" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+                <i className="nav-icon bi bi-collection-play-fill"></i>
+                <p>Privacy Scenarios</p>
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </div>

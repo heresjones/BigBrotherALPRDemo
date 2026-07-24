@@ -14,7 +14,40 @@ export interface AlprRecord {
   capturedAt: string;
   latitude: number | null;
   longitude: number | null;
+  cameraId: string | null;
   createdAt: string;
+}
+
+export interface Camera {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  // Fictional points of interest near this camera — used only to generate
+  // "likely regular destination" guesses on the person profile page.
+  nearby?: string[];
+}
+
+export interface Person {
+  id: string;
+  name: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+  householdIds: string[];
+  // Fictional AI-generated (non-real) face — see public/men|women/CREDITS.md.
+  // Styled as a DMV license photo on the person page.
+  photoUrl: string;
+  // Rest of this is what a license record actually carries — treated as
+  // External (same tier as the photo itself), not a guess.
+  gender: "Male" | "Female";
+  dateOfBirth: string;
+  birthplace: string;
+  heightInches: number;
+  weightLbs: number;
+  eyeColor: string;
+  hairColor: string;
 }
 
 export type UserRole = "Admin" | "Investigator" | "Viewer";

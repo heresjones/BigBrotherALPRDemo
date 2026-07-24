@@ -1,16 +1,24 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import type { AlprRecord } from "../types";
+import { useAppData } from "../context/AppDataContext";
 import { formatLocation, formatTimestamp } from "../utils/format";
+import { VehiclePhoto } from "./VehiclePhoto";
 
 export function RecordCard({ record, footer }: { record: AlprRecord; footer?: ReactNode }) {
+  const { activeDeviationPlates } = useAppData();
+  const hasDeviationAlert = record.plateText !== null && activeDeviationPlates.has(record.plateText);
+
   return (
     <div className="col-lg-3 col-md-4 col-6">
       <div className="card mb-4">
-        <img
-          src={record.imageUrl}
-          alt={record.plateText ?? "Unreadable plate"}
-          className="card-img-top record-card-img"
-        />
+        {hasDeviationAlert && (
+          <span className="badge text-bg-danger position-absolute top-0 end-0 m-2" style={{ zIndex: 1000 }}>
+            <i className="bi bi-exclamation-triangle-fill me-1"></i>
+            Deviation
+          </span>
+        )}
+        <VehiclePhoto src={record.imageUrl} plateText={record.plateText} alt={record.plateText ?? "Unreadable plate"} />
         <div className="card-body">
           <h5 className="font-monospace-lg d-flex align-items-center gap-2 mb-2">
             {record.plateText ?? "Unreadable"}
@@ -32,6 +40,12 @@ export function RecordCard({ record, footer }: { record: AlprRecord; footer?: Re
                 <span className="text-end">{value}</span>
               </div>
             ))}
+          </div>
+          <div className="mt-2 pt-2 border-top">
+            <Link to={`/map/${record.recordId}`} className="btn btn-outline-secondary btn-sm w-100">
+              <i className="bi bi-geo-alt me-1"></i>
+              View on map
+            </Link>
           </div>
           {footer && <div className="mt-2 pt-2 border-top">{footer}</div>}
         </div>

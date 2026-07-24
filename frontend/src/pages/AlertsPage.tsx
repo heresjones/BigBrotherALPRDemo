@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useAppData } from "../context/AppDataContext";
 import { AlertStatusBadge, ActiveStatusBadge } from "../components/Badge";
-import { MockBanner } from "../components/MockBanner";
 import { PageHeader, PageContent } from "../components/Page";
 import { formatTimestamp } from "../utils/format";
 
@@ -38,11 +37,6 @@ export default function AlertsPage() {
     <>
       <PageHeader title="Alerts" lead="Hotlist matches generated from incoming records." />
       <PageContent>
-        <MockBanner>
-          Every hotlist here is demo data created inside this org — there is no NCIC, AMBER Alert, or other
-          government feed in this demo. See <code>docs/PRD.md §7.5</code>.
-        </MockBanner>
-
         <div className="card mb-4">
           <div className="card-header">
             <h3 className="card-title">Alert queue</h3>

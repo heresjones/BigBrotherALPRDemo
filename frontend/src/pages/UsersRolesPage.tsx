@@ -8,7 +8,7 @@ export default function UsersRolesPage() {
     <>
       <PageHeader
         title="Users & Roles"
-        lead="Fixed demo roles: Admin (full access), Investigator (search, alerts, investigations), Viewer (read-only search)."
+        lead="Admin (full access), Investigator (search, alerts, investigations), Viewer (read-only search)."
       />
       <PageContent>
         <RoleGate allow={["Admin"]}>
